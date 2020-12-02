@@ -1,12 +1,23 @@
 <template>
   <div>
-    <w-waterfall></w-waterfall>
+    <w-waterfall :list="list"></w-waterfall>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'example-waterfall'
+  name: 'example-waterfall',
+  data () {
+    return {
+      list: []
+    }
+  },
+  mounted () {
+    this.$axios.get('/mock/waterfall').then(res => {
+      console.log(res)
+      this.list = res.data.data
+    })
+  }
 }
 </script>
 

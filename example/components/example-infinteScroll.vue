@@ -28,6 +28,8 @@
       </ul>
     </div>
     <br />
+    <br />
+    <br />
      <h4>用法二：</h4>
      <br />
     <div v-infinite-scroll="loadingMore2" data-infinite-disabled='disabled' data-infinite-bottom="20" style="height:200px; overflow-y:auto">
@@ -35,6 +37,9 @@
         <li class="demo-item" v-for="i in count3" :key="i">{{i}}</li>
       </ul>
     </div>
+    <br />
+    <br />
+    <highlightjs autodetect :code="code" />
     <h3>Attributes</h3>
     <br />
     <table class="explain_table">
@@ -60,6 +65,11 @@ export default {
   name: 'example-infinteScroll',
   data () {
     return {
+      code: `<div v-infinite-scroll="loadingMore" data-infinite-disabled='disabled' data-infinite-bottom="20" style="height:200px; overflow-y:auto">
+  <ul>
+    <li class="demo-item" v-for="i in count3" :key="i">{{i}}</li>
+  </ul>
+</div>`,
       count: 20,
       count2: 20,
       count3: 20,
