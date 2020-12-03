@@ -6,7 +6,7 @@ const data = Mock.mock({
       title: '@ctitle',
       content: '@cparagraph',
       create_time: '@date(yyyy-MM-dd hh:mm:ss)',
-      image: '@image("300x300", "#50B347", "#FFF", "Mock.js")'
+      image: '@dataImage()'
     }
   ]
 })
