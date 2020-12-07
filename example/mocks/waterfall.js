@@ -1,4 +1,7 @@
 import Mock from 'mockjs'
+Mock.setup({
+  timeout: '500-1000'
+})
 const data = Mock.mock({
   'list|20-60': [
     {
@@ -6,7 +9,14 @@ const data = Mock.mock({
       title: '@ctitle',
       content: '@cparagraph',
       create_time: '@date(yyyy-MM-dd hh:mm:ss)',
-      image: '@dataImage()'
+      'image|1': ['@dataImage()', ''],
+      'video|1': [
+        '',
+        'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4',
+        'http://vjs.zencdn.net/v/oceans.mp4',
+        'https://media.w3.org/2010/05/sintel/trailer.mp4',
+        'http://mirror.aarnet.edu.au/pub/TED-talks/911Mothers_2010W-480p.mp4'
+      ]
     }
   ]
 })
@@ -19,6 +29,31 @@ Mock.mock(/\/mock\/waterfall/, 'get', options => {
   const pagenum = getQuery(options.url, 'pagenum') || 1
   // 获取传递的参数pagesize
   const pagesize = getQuery(options.url, 'pagesize') || 10
+  // console.log('++++++++++++++++++++++++', pagesize, pagenum)
+  // 截取数据的起始位置
+  const start = (pagenum - 1) * pagesize
+  // 截取数据的终点位置
+  const end = pagenum * pagesize
+  // 计算总页数
+  const totalPage = Math.ceil(data.list.length / pagesize)
+  // 数据的起始位置：(pageindex-1)*pagesize  数据的结束位置：pageindex*pagesize
+  const list = pagenum > totalPage ? [] : data.list.slice(start, end)
+
+  return {
+    status: 200,
+    message: 'success',
+    data: list,
+    total: data.list.length
+  }
+})
+
+Mock.mock(/\/mock\/waterfall\/video/, 'get', options => {
+  console.log(options)
+  // 获取传递的参数pageindex
+  const pagenum = getQuery(options.url, 'pagenum') || 1
+  // 获取传递的参数pagesize
+  const pagesize = getQuery(options.url, 'pagesize') || 10
+  // console.log('++++++++++++++++++++++++', pagesize, pagenum)
   // 截取数据的起始位置
   const start = (pagenum - 1) * pagesize
   // 截取数据的终点位置
@@ -42,7 +77,7 @@ const getQuery = (url, name) => {
     const queryStrArr = url.substr(index + 1).split('&')
     for (var i = 0; i < queryStrArr.length; i++) {
       const itemArr = queryStrArr[i].split('=')
-      console.log(itemArr)
+      // console.log(itemArr)
       if (itemArr[0] === name) {
         return itemArr[1]
       }

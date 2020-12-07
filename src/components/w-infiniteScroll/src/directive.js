@@ -1,3 +1,6 @@
+
+import _ from 'lodash'
+
 const attributes = {
   infiniteBottom: 0,
   infiniteDisabled: false
@@ -23,7 +26,7 @@ export default {
     const loadingData = binding.value
     const container = el
     container &&
-      container.addEventListener('scroll', scroll.bind(container, loadingData, node.context))
+      container.addEventListener('scroll', _.debounce(scroll.bind(container, loadingData, node.context), 100))
   },
   unbind (el) {
     const container = el
