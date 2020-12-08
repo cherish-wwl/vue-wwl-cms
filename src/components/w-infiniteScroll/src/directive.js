@@ -13,7 +13,7 @@ const scroll = function (cb, vm) {
     infiniteBottom: Number(infiniteBottom),
     infiniteDisabled: (typeof vm[infiniteDisabled] === 'undefined') ? (infiniteDisabled === 'false' ? false : Boolean(infiniteDisabled)) : vm[infiniteDisabled]
   })
-  console.log('attrs', attrs)
+  // console.log('attrs', attrs)
   if (attrs.infiniteDisabled) return
   const { clientHeight, scrollTop, scrollHeight } = this
   if (clientHeight + scrollTop + attrs.infiniteBottom > scrollHeight) {

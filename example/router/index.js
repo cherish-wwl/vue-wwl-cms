@@ -26,6 +26,11 @@ export default new Router({
           path: '/waterfall',
           name: 'waterfall',
           component: cmsp.exampleWaterfall
+        },
+        {
+          path: '/infinteWater',
+          name: 'infinteWater',
+          component: cmsp.exampleInfinteWater
         }
       ]
     }

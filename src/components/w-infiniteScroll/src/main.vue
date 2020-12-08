@@ -15,9 +15,14 @@
 </template>
 <script>
 import _ from 'lodash'
+
 export default {
   name: 'WInfiniteScroll',
   props: {
+    container: {
+      type: String,
+      default: ''
+    },
     bottom: {
       type: Number,
       default: 0
@@ -27,26 +32,41 @@ export default {
   },
   data () {
     return {
-      loading: true
+      loading: true,
+      isMounted: false
     }
   },
   computed: {
     scrollContent () {
+      if (!this.isMounted) return
+      if (this.container) {
+        let target = ''
+        if (typeof this.container === 'object') {
+          target = this.container.$el || this.container
+        } else if (typeof this.container === 'string') {
+          if (this.container === 'html' || this.container === 'window') {
+            target = window
+          } else {
+            target = document.querySelectorAll(this.container)[0]
+          }
+        }
+        return target
+      }
       return this.$refs.scroll
     }
   },
   mounted () {
-    // console.log(this.scrollContent)
-    this.scrollContent && this.scrollContent.addEventListener('scroll', _.debounce(this.scroll, 100))
+    this.isMounted = true
+    this.$nextTick(() => {
+      this.scrollContent.addEventListener('scroll', _.debounce(this.scroll, 100), true)
+    })
   },
   methods: {
     scroll () {
       if (this.disabled) return
-      // console.log('可视区域高度', this.scrollContent.clientHeight, this.scrollContent.offsetHeight)
-      // console.log('已滚动高度', this.scrollContent.scrollTop)
-      // console.log('总区域高度', this.scrollContent.scrollHeight)
-      const { clientHeight, scrollTop, scrollHeight } = this.scrollContent
-      // console.log('scroll', clientHeight + scrollTop, scrollHeight - this.bottom)
+      let content = this.scrollContent
+      if (!this.scrollContent.clientHeight) content = document.documentElement || document.body
+      const { clientHeight, scrollTop, scrollHeight } = content
       if (clientHeight + scrollTop >= scrollHeight - this.bottom) {
         this.loading = true
         this.$emit('loadMore', () => {
@@ -54,6 +74,10 @@ export default {
         })
       }
     }
+  },
+  beforeDestroy () {
+    this.scrollContent.scrollTop = 0
+    this.scrollContent.removeEventListener('scroll', this.scroll)
   }
 }
 </script>

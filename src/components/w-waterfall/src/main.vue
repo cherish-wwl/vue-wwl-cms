@@ -5,25 +5,38 @@
       <div class="w_wf_card card_animation" :ref="'w_wf_'+index" :style="{
           width: imgBaseWidth + 'px'
         }">
-        <slot :item="item">
           <div class="w_wf_inner">
             <div class="w_wf_image">
-
-              <img v-if="item[props.image]" :src="item[props.image]" />
-              <img v-else-if="videoCover && item.coverImg" :src="item.coverImg" />
+              <template v-if="item[props.image]">
+                <slot name="image" :item="item">
+                   <img class="image" :src="item[props.image]" />
+                </slot>
+              </template>
+              <template v-else-if="videoCover && item.coverImg">
+                <slot name="image" :item="{...item,image:item.coverImg}">
+                  <img class="cover" :src="item.coverImg" />
+                </slot>
+              </template>
+              <template v-if="!!$scopedSlots.video()&&!item[props.image]&&item[props.video]&& !videoCover">
+                <slot name="video" :item="item"></slot>
+              </template>
               <video
-                v-show="!videoCover&&item[props.video]"
-                preload
+                v-show="!$scopedSlots.video()&&!item[props.image]&&item[props.video]&& !videoCover"
+                x-webkit-airplay="allow"
+                preload="auto"
+                crossOrigin='Anonymous'
                 @loadeddata="loadedVideo($event,item,index)"
                 controls
                 :src="item[props.video]" ></video>
             </div>
-            <div class="w_wf_detail">
-              <h3>{{item[props.title]}}</h3>
-              <p>{{item[props.content]}}</p>
-            </div>
+            <slot :item="item">
+              <div class="w_wf_detail">
+                <h3>{{item[props.title]}}</h3>
+                <p>{{item[props.content]}}</p>
+              </div>
+            </slot>
+
           </div>
-        </slot>
       </div>
     </li>
   </ul>
@@ -86,7 +99,7 @@ export default {
       load_list: [],
       colsHeightArr: [],
       beginIndex: 0,
-      isPreloading: true,
+      isPreloading: false,
       loadedImageCount: 0,
       cols: 0,
       isMobile: !!navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)
@@ -94,6 +107,7 @@ export default {
   },
   watch: {
     list (newV, oldV) {
+      if (oldV.length === newV.length) return
       this.beginIndex = oldV.length
       this.preLoad()
     },
@@ -104,6 +118,7 @@ export default {
       this.waterfall()
     },
     loadedImageCount (val) {
+      // console.log('loadedImageCount', val)
       if (val === this.list.length) {
         this.$emit('preloaded')
       }
@@ -112,6 +127,9 @@ export default {
   computed: {
     WHeight () {
       return Math.max.apply(null, this.colsHeightArr)
+    },
+    MinBottom () {
+      return this.WHeight - Math.min.apply(null, this.colsHeightArr)
     }
   },
   mounted () {
@@ -120,6 +138,7 @@ export default {
     this.colsHeightArr = new Array(this.cols).fill(0)
     this.preLoad()
     window.addEventListener('resize', this.windowResize)
+    console.log(this)
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.windowResize)
@@ -131,43 +150,56 @@ export default {
       })
     },
     loadedVideo (video, item, index) {
-      console.log(video, item)
-      console.log('onloadeddata', this.videoCover)
+      if (item[this.props.image]) return
       if (this.videoCover) {
-        this.createCoverImg(video.target, item, () => {
-          this.loadedImageCount += 1
+        this.createCoverImg(video.target, item).then((dataUrl) => {
+          this.$set(item, 'coverImg', dataUrl)
+          const img = new Image()
+          img.src = dataUrl
+          img.onload = img.onerror = () => {
+            this.loadedImageCount += 1
+            // console.log('coverImg imgonload', this.loadedImageCount)
+          }
         })
       } else {
         this.loadedImageCount += 1
+        // console.log('video onload', this.loadedImageCount)
       }
     },
     preLoad () {
+      this.isPreloading = true
+      // debugger
       for (let index = this.beginIndex; index < this.list.length; index++) {
         const item = this.list[index]
+
         if (item[this.props.image]) {
           const img = new Image()
           img.src = item[this.props.image]
           img.onload = img.onerror = () => {
             this.loadedImageCount += 1
+            // console.log('imgonload', this.loadedImageCount)
           }
-        } else {
+          continue
+        }
+        // console.log('isVideo', !!item[this.props.video])
+        if (!item[this.props.video]) {
           this.loadedImageCount += 1
         }
+        // console.log('preLoad', this.loadedImageCount)
       }
     },
-    createCoverImg (video, item, cb) {
-      const scale = 0.8
-      const canvas = document.createElement('canvas') // canvas画布
-      canvas.width = video.videoWidth * scale
-      canvas.height = video.videoHeight * scale
-      canvas
-        .getContext('2d')
-        .drawImage(video, 0, 0, canvas.width, canvas.height) // 画图
-      const dataUrl = canvas.toDataURL('image/png')
-      console.log('dataUrl', dataUrl)
-      // item.coverImg = dataUrl
-      this.$set(item, 'coverImg', dataUrl)
-      cb && cb()
+    createCoverImg (video, item) {
+      return new Promise((resolve, reject) => {
+        const scale = 0.8
+        const canvas = document.createElement('canvas') // canvas画布
+        canvas.width = video.videoWidth * scale
+        canvas.height = video.videoHeight * scale
+        canvas
+          .getContext('2d')
+          .drawImage(video, 0, 0, canvas.width, canvas.height) // 画图
+        const dataUrl = canvas.toDataURL('image/png')
+        resolve(dataUrl)
+      })
     },
     calcuCols () {
       var waterfallWidth = this.width || this.$refs.w_waterfall.scrollWidth || window.innerWidth
@@ -179,10 +211,12 @@ export default {
       return r
     },
     waterfall () {
+      // console.log('waterfall', this.beginIndex, this.list.length)
       for (let index = this.beginIndex; index < this.list.length; index++) {
         const minH = Math.min.apply(null, this.colsHeightArr)
         const minHIndex = this.colsHeightArr.indexOf(minH)
         const h = this.$refs['w_wf_' + index][0]
+        // console.log('waterfall', h, Math.round(this.imgBaseWidth / (h.scrollWidth / h.scrollHeight)))
         this.colsHeightArr[minHIndex] += Math.round(this.imgBaseWidth / (h.scrollWidth / h.scrollHeight))
         this.$refs['w_wf_' + index][0].style.top = minH + 'px'
         this.$refs['w_wf_' + index][0].style.left = (this.imgBaseWidth + this.gap) * minHIndex + 'px'

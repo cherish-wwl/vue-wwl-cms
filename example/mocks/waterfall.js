@@ -12,10 +12,7 @@ const data = Mock.mock({
       'image|1': ['@dataImage()', ''],
       'video|1': [
         '',
-        'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4',
-        'http://vjs.zencdn.net/v/oceans.mp4',
-        'https://media.w3.org/2010/05/sintel/trailer.mp4',
-        'http://mirror.aarnet.edu.au/pub/TED-talks/911Mothers_2010W-480p.mp4'
+        'http://192.168.1.205:8201/media/thread/8/video/c7j35k6evuqkezquka.mp4'
       ]
     }
   ]

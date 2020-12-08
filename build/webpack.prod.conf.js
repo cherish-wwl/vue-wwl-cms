@@ -16,7 +16,7 @@ const env = process.env.NODE_ENV === 'testing'
   : require('../config/prod.env')
 
 const webpackConfig = merge(baseWebpackConfig, {
-  assetsPublicPath: './',
+  // assetsPublicPath: './',
   entry: {app: './src/index.js'},
   module: {
     rules: utils.styleLoaders({
