@@ -8,7 +8,9 @@
       :width="width"
       :gap="gap"
       :maxCols="maxCols"
+      @cardClick="cardClick"
       :bgap="bgap"
+      :cardClassName="cardClassName"
       :props="props" >
       <template slot-scope="{ item }">
         <slot :item="item"></slot>
@@ -91,6 +93,10 @@ export default {
           video: 'video'
         }
       }
+    },
+    cardClassName: {
+      type: String,
+      defalut: ''
     }
   },
   components: {
@@ -103,6 +109,9 @@ export default {
       if (this.$refs.waterfall.isPreloading) return
       this.$emit('loadMore')
       cb()
+    },
+    cardClick (index, item) {
+      this.$emit('cardClick', index, item)
     }
   }
 }

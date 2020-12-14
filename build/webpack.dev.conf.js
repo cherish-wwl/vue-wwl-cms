@@ -10,6 +10,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
 
+console.log('12123','dev',config.dev.NODE_ENV)
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 

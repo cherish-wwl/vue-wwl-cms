@@ -9,6 +9,7 @@
         <li class="demo-item" v-for="i in count" :key="i">{{i}}</li>
       </ul>
     </w-infiniteScroll>
+    <pre v-highlight="sourcecode.html"><code class="html"></code></pre>
     <br />
     <h3>禁用加载</h3>
     <br />
@@ -17,6 +18,8 @@
         <li class="demo-item demo2" v-for="i in count2" :key="i">{{i}}</li>
       </ul>
     </w-infiniteScroll>
+    <br />
+    <pre v-highlight="sourcecode.html1"><code class="html"></code></pre>
     <br />
     <h3>指令用法 (大于40条,禁用加载)</h3>
     <br />
@@ -28,6 +31,7 @@
       </ul>
     </div>
     <br />
+    <pre v-highlight="sourcecode.html2"><code class="html"></code></pre>
     <br />
     <br />
      <h4>用法二：</h4>
@@ -39,7 +43,7 @@
     </div>
     <br />
     <br />
-    <highlightjs autodetect :code="code" />
+    <pre v-highlight="sourcecode.html3"><code class="html"></code></pre>
     <h3>Attributes</h3>
     <br />
     <table class="explain_table">
@@ -60,16 +64,15 @@
     </table>
   </div>
 </template>
+
 <script>
+import { infinteScroll } from './example-code'
+
 export default {
   name: 'example-infinteScroll',
   data () {
     return {
-      code: `<div v-infinite-scroll="loadingMore" data-infinite-disabled='disabled' data-infinite-bottom="20" style="height:200px; overflow-y:auto">
-  <ul>
-    <li class="demo-item" v-for="i in count3" :key="i">{{i}}</li>
-  </ul>
-</div>`,
+      sourcecode: infinteScroll,
       count: 20,
       count2: 20,
       count3: 20,
@@ -95,6 +98,9 @@ export default {
     disabled () {
       return this.count3 >= 40
     }
+  },
+  mounted () {
+
   },
   methods: {
     loadingMore () {

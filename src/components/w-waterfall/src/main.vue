@@ -1,9 +1,9 @@
 <template>
 <div class="w_waterfall" ref="w_waterfall" :style="{minHeight: WHeight+'px'}">
   <ul>
-    <li v-for="(item, index) in list" :key="item[props.id]">
-      <div class="w_wf_card card_animation" :ref="'w_wf_'+index" :style="{
-          width: imgBaseWidth + 'px'
+    <li v-for="(item, index) in list" :key="item[props.id]" :style="{opacity: !isPreloading || index < beginIndex  ? '' : 0, zIndex: !isPreloading || index < beginIndex  ? '' : -1}">
+      <div :class="'w_wf_card card_animation ' + (cardClassName || '')"  :ref="'w_wf_'+index" @click="cardClick(index, item)"  :style="{
+          width: CardWidth + 'px'
         }">
           <div class="w_wf_inner">
             <div class="w_wf_image">
@@ -17,11 +17,11 @@
                   <img class="cover" :src="item.coverImg" />
                 </slot>
               </template>
-              <template v-if="!!$scopedSlots.video()&&!item[props.image]&&item[props.video]&& !videoCover">
+              <template v-if="!!($scopedSlots.video && $scopedSlots.video())&&!item[props.image]&&item[props.video]&& !videoCover">
                 <slot name="video" :item="item"></slot>
               </template>
               <video
-                v-show="!$scopedSlots.video()&&!item[props.image]&&item[props.video]&& !videoCover"
+                v-show="! ($scopedSlots.video && $scopedSlots.video())&&!item[props.image]&&item[props.video]&& !videoCover"
                 x-webkit-airplay="allow"
                 preload="auto"
                 crossOrigin='Anonymous'
@@ -47,6 +47,10 @@
 export default {
   name: 'WWaterfall',
   props: {
+    cardClassName: {
+      type: String,
+      defalut: ''
+    },
     videoCover: {
       type: Boolean,
       default: false
@@ -130,6 +134,21 @@ export default {
     },
     MinBottom () {
       return this.WHeight - Math.min.apply(null, this.colsHeightArr)
+    },
+    ColWidth () {
+      if (this.isMobile) {
+        const waterfallWidth = this.width || (this.$refs.w_waterfall && this.$refs.w_waterfall.scrollWidth) || window.innerWidth
+        return waterfallWidth / 2
+      } else {
+        return this.CardWidth + this.gap
+      }
+    },
+    CardWidth () {
+      if (this.isMobile) {
+        return this.ColWidth - this.mgap
+      } else {
+        return this.imgBaseWidth
+      }
     }
   },
   mounted () {
@@ -144,6 +163,9 @@ export default {
     window.removeEventListener('resize', this.windowResize)
   },
   methods: {
+    cardClick (index, item) {
+      this.$emit('cardClick', index, item)
+    },
     bindEvents () {
       this.$on('preloaded', () => {
         this.waterfall()
@@ -203,23 +225,24 @@ export default {
     },
     calcuCols () {
       var waterfallWidth = this.width || this.$refs.w_waterfall.scrollWidth || window.innerWidth
-      var cols = parseInt(waterfallWidth / (this.imgBaseWidth + this.gap))
+      var cols = parseInt(waterfallWidth / this.ColWidth)
       cols = cols === 0 ? 1 : cols
       const r = this.isMobile ? 2 : (cols > this.maxCols ? this.maxCols : cols)
       this.cols = r
-      this.$refs.w_waterfall.style.marginLeft = (waterfallWidth - (this.imgBaseWidth + this.gap) * r) / 2 + 'px'
+      this.$refs.w_waterfall.style.marginLeft = (waterfallWidth - this.ColWidth * r) / 2 + 'px'
       return r
     },
     waterfall () {
-      // console.log('waterfall', this.beginIndex, this.list.length)
+      console.log('waterfall', this.beginIndex, this.list.length)
       for (let index = this.beginIndex; index < this.list.length; index++) {
         const minH = Math.min.apply(null, this.colsHeightArr)
         const minHIndex = this.colsHeightArr.indexOf(minH)
-        const h = this.$refs['w_wf_' + index][0]
+        const h = this.$refs['w_wf_' + index] && this.$refs['w_wf_' + index][0]
+        if (!h) continue
         // console.log('waterfall', h, Math.round(this.imgBaseWidth / (h.scrollWidth / h.scrollHeight)))
-        this.colsHeightArr[minHIndex] += Math.round(this.imgBaseWidth / (h.scrollWidth / h.scrollHeight))
+        this.colsHeightArr[minHIndex] += Math.round(this.CardWidth / (h.scrollWidth / h.scrollHeight))
         this.$refs['w_wf_' + index][0].style.top = minH + 'px'
-        this.$refs['w_wf_' + index][0].style.left = (this.imgBaseWidth + this.gap) * minHIndex + 'px'
+        this.$refs['w_wf_' + index][0].style.left = this.ColWidth * minHIndex + 'px'
       }
       this.colsHeightArr = [...this.colsHeightArr]
       this.isPreloading = false

@@ -3,12 +3,12 @@
     <h1>WInfinteWater</h1>
     <br />
     <h3>基础用法</h3>
-    <w-infiniteWater :list="list2" style="height:800px;" @loadMore="loadingMore" :noMore="noMore" :bottom="50">
-    </w-infiniteWater>
+    <!-- <w-infiniteWater :list="list2" style="height:800px;" @loadMore="loadingMore" :noMore="noMore" :bottom="50">
+    </w-infiniteWater> -->
 
     <br />
     <h3>无限滚动 + 瀑布流 + 视频 {{list3.length}}</h3>
-    <w-infiniteWater :list="list3" container="html" @loadMore="loadingVideo" videoCover :noMore="noMore1" :bottom="50" mode="video" >
+    <w-infiniteWater :list="list3" container="html" @cardClick="cardClick" @loadMore="loadingVideo" videoCover :noMore="noMore1" :bottom="50" mode="video" >
       <template v-slot:image="{ item }">
         <img class="example-image" :src="item.image"/>
       </template>
@@ -45,25 +45,26 @@ export default {
   methods: {
     loadingMore () {
       if (this.noMore) return
-      this.$axios.get('/mock/waterfall', {params: {pagenum: this.pagenum, pagesize: this.pagesize}}).then(res => {
+      this.$axios.get('/mock/waterfall', {params: {pagenum: this.pagenum++, pagesize: this.pagesize}}).then(res => {
         console.log('loadingMore', this.pagenum, res.data.data)
         if (res.data.data.length < this.pagesize) {
           this.noMore = true
         }
         this.list2 = [...this.list2, ...res.data.data]
-        this.pagenum += 1
       })
     },
     loadingVideo () {
       if (this.noMore1) return
-      this.$axios.get('/mock/waterfall/video', {params: {pagenum: this.pagenum1, pagesize: this.pagesize}}).then(res => {
+      this.$axios.get('/mock/waterfall/video', {params: {pagenum: this.pagenum1++, pagesize: this.pagesize}}).then(res => {
         console.log('loadingVideo', this.pagenum1, res.data.data)
         if (res.data.data.length < this.pagesize) {
           this.noMore1 = true
         }
         this.list3 = [...this.list3, ...res.data.data]
-        this.pagenum1 += 1
       })
+    },
+    cardClick (index, item) {
+      console.log(index, item)
     }
   }
 
