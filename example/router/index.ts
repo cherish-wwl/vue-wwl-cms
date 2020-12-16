@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '../views/Home'
+import Home from '../views/Home.vue'
+import Button from '../components/example-button.vue'
 import cmsp from '../components'
 Vue.use(Router)
-
+console.log('cmsp', cmsp)
 export default new Router({
   routes: [
     {
@@ -13,7 +14,8 @@ export default new Router({
       redirect: '/button',
       children: [
         {
-          path: '/button',
+          path
+          : '/button',
           name: 'button',
           component: cmsp.exampleButton
         },

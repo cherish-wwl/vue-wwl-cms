@@ -19,20 +19,21 @@
     </div>
   </div>
 </template>
-<script>
+<script lang='ts'>
+import { Vue, Component } from 'vue-property-decorator'
+// import { RouterOptions, RouteConfig } from 'vue-router'
+// type Route =  RouteConfig[] | never[]
+@Component
 
-export default {
-  data () {
-    return {
-      isOpen: false,
-      routes: []
-    }
-  },
+export default class Home extends Vue {
+  isOpen = false
+  routes: [] = []
+
   created () {
-    console.log(this.$router.options.routes)
     this.routes = this.$router.options.routes[0].children
   }
 }
+
 </script>
 <style scoped>
 .container{

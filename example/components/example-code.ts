@@ -29,8 +29,15 @@ const html3 = `
   </ul>
 </div>
 
+
 `
-const infinteScroll = {
+type InfinteScroll = {
+  html: string
+  html1: string,
+  html2: string,
+  html3: string
+}
+const infinteScroll: InfinteScroll = {
   html,
   html1,
   html2,

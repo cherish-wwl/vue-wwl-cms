@@ -82,3 +82,5 @@ const getQuery = (url, name) => {
   }
   return null
 }
+
+export default Mock

@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { infinteScroll } from './example-code'
+import { infinteScroll } from './example-code.ts'
 
 export default {
   name: 'example-infinteScroll',

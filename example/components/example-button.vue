@@ -1,5 +1,5 @@
 <template>
-  <div class="example-button">
+  <div class='example-button'>
     <w-button @click="clickFunc(123)">
       这是一个按钮
     </w-button>
@@ -12,13 +12,17 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'example-button',
-  methods: {
-    clickFunc (data) {
-      console.log('data')
-    }
+<script lang='ts'>
+import { Vue, Component } from 'vue-property-decorator'
+
+@Component
+
+export default class Button extends Vue {
+  name: string = 'example-button'
+
+  clickFunc (data: string): void {
+    console.log('data')
   }
 }
+
 </script>
