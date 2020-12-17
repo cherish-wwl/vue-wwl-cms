@@ -62,9 +62,9 @@ module.exports = {
             loader: "ts-loader",
             options: { appendTsxSuffixTo: [/\.vue$/] }
           },
-          {
-            loader: 'tslint-loader'
-          }
+          // {
+          //   loader: 'tslint-loader'
+          // }
         ]
       },
       {

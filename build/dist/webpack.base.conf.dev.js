@@ -71,9 +71,10 @@ module.exports = {
         options: {
           appendTsxSuffixTo: [/\.vue$/]
         }
-      }, {
-        loader: 'tslint-loader'
-      }]
+      } // {
+      //   loader: 'tslint-loader'
+      // }
+      ]
     }, {
       test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
       loader: 'url-loader',

@@ -21,16 +21,14 @@
 </template>
 <script lang='ts'>
 import { Vue, Component } from 'vue-property-decorator'
-// import { RouterOptions, RouteConfig } from 'vue-router'
-// type Route =  RouteConfig[] | never[]
-@Component
 
+@Component
 export default class Home extends Vue {
   isOpen = false
   routes: [] = []
-
   created () {
-    this.routes = this.$router.options.routes[0].children
+    const router: any = this.$router
+    this.routes = router.options.routes[0].children
   }
 }
 
