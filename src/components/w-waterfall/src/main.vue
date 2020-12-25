@@ -21,6 +21,7 @@
                 <slot name="video" :item="item"></slot>
               </template>
               <video
+                v-if="item[props.video]"
                 v-show="! ($scopedSlots.video && $scopedSlots.video())&&!item[props.image]&&item[props.video]&& !videoCover"
                 x-webkit-airplay="allow"
                 preload="auto"

@@ -1,6 +1,6 @@
 {
   "name": "vue-wwl-cms",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "A Vue.js project",
   "author": "Cherish <791832287@qq.com>",
   "private": false,
@@ -20,7 +20,7 @@
   },
   "files": [
     "dist",
-    "src/components"
+    "src"
   ],
   "dependencies": {
     "axios": "^0.21.0",
@@ -64,7 +64,6 @@
     "eslint-plugin-standard": "^3.0.1",
     "eslint-plugin-typescript": "^0.14.0",
     "eslint-plugin-vue": "^4.0.0",
-    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.4",
     "friendly-errors-webpack-plugin": "^1.6.1",
     "html-webpack-plugin": "^4.5.0",

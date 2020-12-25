@@ -1,7 +1,6 @@
 'use strict'
 const path = require('path')
 const config = require('../config')
-// const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const packageConfig = require('../package.json')
@@ -52,7 +51,12 @@ exports.cssLoaders = function (options) {
       //   fallback: 'vue-style-loader',
       //   // publicPath: '../../'
       // })
-      return [MiniCssExtractPlugin.loader].concat(loaders)
+      let extractLoader = {
+            loader: MiniCssExtractPlugin.loader,
+            options: {}
+        }
+
+      return [extractLoader].concat(loaders)
 
     } else {
       return ['vue-style-loader'].concat(loaders)

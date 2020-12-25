@@ -8,9 +8,13 @@
 
     <br />
     <h3>无限滚动 + 瀑布流 + 视频 {{list3.length}}</h3>
-    <w-infiniteWater :list="list3" container="html" @cardClick="cardClick" @loadMore="loadingVideo" videoCover :noMore="noMore1" :bottom="50" mode="video" >
+    <w-infiniteWater :list="list3" container="html" :props="{ id: 'id',
+          title: 'title',
+          content: 'content',
+          image: 'cover',
+          video: 'video'}" @cardClick="cardClick" @loadMore="loadingVideo" videoCover :noMore="noMore1" :bottom="50" mode="video" >
       <template v-slot:image="{ item }">
-        <img class="example-image" :src="item.image"/>
+        <img class="example-image" :src="item.cover"/>
       </template>
       <template v-slot:video="{ item }">
         <video class="example-video" :src="item.video"/>

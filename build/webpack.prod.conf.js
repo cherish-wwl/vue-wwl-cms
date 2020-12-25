@@ -7,21 +7,20 @@ const merge = require('webpack-merge')
 const baseWebpackConfig = require('./webpack.base.conf')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+// const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-
 const env = process.env.NODE_ENV === 'testing'
   ? require('../config/test.env')
   : require('../config/prod.env')
-
 const webpackConfig = merge(baseWebpackConfig, {
   // assetsPublicPath: './',
   entry: {app: './src/index.js'},
   module: {
     rules: utils.styleLoaders({
       sourceMap: config.build.productionSourceMap,
-      extract: true,
+      extract: false,
       usePostCSS: true
     })
   },
@@ -48,16 +47,19 @@ const webpackConfig = merge(baseWebpackConfig, {
       sourceMap: config.build.productionSourceMap,
       parallel: true
     }),
+    // new MiniCssExtractPlugin({
+    //   filename: 'vue-wwl-cms.min.css',
+    // }),
     // extract css into its own file
-    new ExtractTextPlugin({
-      disable: true
+    // new ExtractTextPlugin({
+      // disable: true
     //   filename: 'vue-wwl-cms.min.css',
     //   // Setting the following option to `false` will not extract CSS from codesplit chunks.
     //   // Their CSS will instead be inserted dynamically with style-loader when the codesplit chunk has been loaded by webpack.
     //   // It's currently set to `true` because we are seeing that sourcemaps are included in the codesplit bundle as well when it's `false`,
     //   // increasing file size: https://github.com/vuejs-templates/webpack/issues/1110
     //   allChunks: true,
-    }),
+    // }),
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
     new OptimizeCSSPlugin({
@@ -130,23 +132,23 @@ const webpackConfig = merge(baseWebpackConfig, {
     ])
   ],
   optimization: {
-		splitChunks: {
-			cacheGroups: {
-				commons: {
-					chunks: "all",
-					minChunks: 2,
-					maxInitialRequests: 5, // The default limit is too small to showcase the effect
-					minSize: 0 // This is example is too small to create commons chunks
-				},
-				vendor: {
-					test: /node_modules/,
-					chunks: "all",
-					name: "vendor",
-					priority: 10,
-					enforce: true
-				}
-			}
-		}
+		// splitChunks: {
+		// 	cacheGroups: {
+		// 		commons: {
+		// 			chunks: "all",
+		// 			minChunks: 2,
+		// 			maxInitialRequests: 5, // The default limit is too small to showcase the effect
+		// 			minSize: 0 // This is example is too small to create commons chunks
+		// 		},
+		// 		vendor: {
+		// 			test: /node_modules/,
+		// 			chunks: "all",
+		// 			name: "vendor",
+		// 			priority: 10,
+		// 			enforce: true
+		// 		}
+		// 	}
+		// }
 	},
 })
 

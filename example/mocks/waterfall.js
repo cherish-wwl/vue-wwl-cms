@@ -9,7 +9,7 @@ const data = Mock.mock({
       title: '@ctitle',
       content: '@cparagraph',
       create_time: '@date(yyyy-MM-dd hh:mm:ss)',
-      'image|1': ['@dataImage()', ''],
+      'cover|1': ['@dataImage()', ''],
       'video|1': [
         '',
         'http://192.168.1.205:8201/media/thread/8/video/c7j35k6evuqkezquka.mp4'
